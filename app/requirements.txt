@@ -1,8 +1,10 @@
-fastapi==0.94.1
-uvicorn==0.21.0
+fastapi==0.95.0
+uvicorn==0.21.1
 starlette==0.26.1
-pydantic==1.10.6
-torch==1.10.0
-diffusers==0.2.2
+pydantic==1.10.7
+torch==2.0.0
+diffusers==0.14.0
 jupyter==1.0.0
-huggingface-hub==0.9.1
+huggingface-hub==0.13.3
+transformers==4.27.4
+accelerate==0.4.0

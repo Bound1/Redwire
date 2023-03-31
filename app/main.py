@@ -1,13 +1,7 @@
 from fastapi import FastAPI
+from app.api.image import router as image_router
 
 app = FastAPI()
 
+app.include_router(image_router, prefix="/api")
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
-
-
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
