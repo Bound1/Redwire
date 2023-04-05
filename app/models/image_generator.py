@@ -12,7 +12,7 @@ class ImageGenerator:
 
     def generate_image(self, prompt, save_path=None):
         with torch.no_grad():
-            image = self.pipe(prompt, num_inference_steps=50).images[0]
+            image = self.pipe(prompt, guidance_scale=7.5).images[0]
         if save_path is not None:
             os.makedirs(os.path.dirname(save_path), exist_ok=True)
             image.save(save_path)
