@@ -19,17 +19,16 @@ async def text_to_image(input: InputText):
         "num_inference": input.num_inference,
         "guidance_scale": input.guidance_scale,
         "negative_prompt": input.negative_prompt,
-        "num_images_per_prompt": input.num_images_per_prompt
     }
     # Unpack the dictionary into separate variables
-    prompt, height, width, num_inference, guidance_scale, negative_prompt, num_images_per_prompt = params.values()
+    prompt, height, width, num_inference, guidance_scale, negative_prompt = params.values()
 
     if not prompt:
         raise HTTPException(status_code=400, detail="Prompt cannot be empty")
     try:
         image_path = f"generated_images/{prompt}.png"
         text_to_image_generator.generate_image(prompt, height, width, num_inference, guidance_scale, negative_prompt,
-                                               num_images_per_prompt, save_path=image_path)
+                                               save_path=image_path)
         return FileResponse(image_path, media_type="image/png")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -44,16 +43,16 @@ async def text_to_image_grid(input: InputText):
         "num_inference": input.num_inference,
         "guidance_scale": input.guidance_scale,
         "negative_prompt": input.negative_prompt,
-        "num_images_per_prompt": input.num_images_per_prompt,
         "num_images": input.num_images
     }
     # Unpack the dictionary into separate variables
-    prompt, height, width, num_inference, guidance_scale, negative_prompt, num_images_per_prompt, num_images = params.values()
+    prompt, height, width, num_inference, guidance_scale, negative_prompt, num_images = params.values()
     if not prompt:
         raise HTTPException(status_code=400, detail="Prompt cannot be empty")
     try:
         image_path = f"generated_images/{prompt}.png"
-        text_to_image_generator.generate_image_grid(prompt, height, width, num_inference, guidance_scale, negative_prompt, num_images_per_prompt, num_images, save_path=image_path)
+        text_to_image_generator.generate_image_grid(prompt, height, width, num_inference, guidance_scale,
+                                                    negative_prompt, num_images, save_path=image_path)
         return FileResponse(image_path, media_type="image/png")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -67,11 +66,10 @@ async def image_to_image(input: InputImage):
         "num_inference": input.num_inference,
         "guidance_scale": input.guidance_scale,
         "negative_prompt": input.negative_prompt,
-        "num_images_per_prompt": input.num_images_per_prompt,
         "num_images": input.num_images
     }
     # Unpack the dictionary into separate variables
-    prompt, init_img, strength, num_inference, guidance_scale, negative_prompt, num_images_per_prompt, num_images = params.values()
+    prompt, strength, num_inference, guidance_scale, negative_prompt, num_images = params.values()
     if not prompt:
         raise HTTPException(status_code=400, detail="Prompt cannot be empty")
     try:
@@ -79,8 +77,7 @@ async def image_to_image(input: InputImage):
         init_img = f"input_images/{img_name}.jpg"
         image_path = f"generated_images/{prompt}.png"
         image_to_image_generator.generate_image(prompt, init_img, strength, num_inference, guidance_scale,
-                                                negative_prompt,
-                                                num_images_per_prompt, num_images, save_path=image_path)
+                                                negative_prompt, save_path=image_path)
         return FileResponse(image_path, media_type="image/png")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

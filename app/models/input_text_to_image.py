@@ -8,6 +8,5 @@ class InputText(BaseModel):
     num_inference: int
     guidance_scale: float
     negative_prompt: str
-    num_images_per_prompt: int
     num_images: int
 
