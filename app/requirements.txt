@@ -7,3 +7,4 @@ diffusers==0.14.0
 jupyter==1.0.0
 huggingface-hub==0.13.3
 accelerate==0.18.0
+transformers == 4.27.4
