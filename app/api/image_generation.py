@@ -44,15 +44,16 @@ async def text_to_image_grid(input: InputText):
         "num_inference": input.num_inference,
         "guidance_scale": input.guidance_scale,
         "negative_prompt": input.negative_prompt,
+        "num_images_per_prompt": input.num_images_per_prompt,
         "num_images": input.num_images
     }
     # Unpack the dictionary into separate variables
-    prompt, height, width, num_inference, guidance_scale, negative_prompt, num_images_per_prompt = params.values()
+    prompt, height, width, num_inference, guidance_scale, negative_prompt, num_images_per_prompt, num_images = params.values()
     if not prompt:
         raise HTTPException(status_code=400, detail="Prompt cannot be empty")
     try:
         image_path = f"generated_images/{prompt}.png"
-        text_to_image_generator.generate_image_grid(prompt, save_path=image_path)
+        text_to_image_generator.generate_image_grid(prompt, height, width, num_inference, guidance_scale, negative_prompt, num_images_per_prompt, num_images, save_path=image_path)
         return FileResponse(image_path, media_type="image/png")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

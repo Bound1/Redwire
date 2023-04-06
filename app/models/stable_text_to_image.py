@@ -11,7 +11,7 @@ class TextToImageGenerator:
         self.pipe = self.pipe.to(self.device)
 
     def generate_image(self, prompt, height, width, num_inference, guidance_scale, negative_prompt,
-                       num_images_per_prompt, save_path=None):
+                       num_images_per_prompt, save_path):
         with torch.no_grad():
             image = self.pipe(prompt, height, width, num_inference, guidance_scale, negative_prompt,
                               num_images_per_prompt).images[0]
@@ -20,12 +20,11 @@ class TextToImageGenerator:
             image.save(save_path)
         return image
 
-    def generate_image_grid(self, prompt, height, width, num_inference, guidance_scale, negative_prompt,
-                            num_images, save_path=None):
+    def generate_image_grid(self, prompt, height, width, num_inference, guidance_scale, negative_prompt,num_images_per_prompt,
+                            num_images, save_path):
         with torch.no_grad():
             prompts = [prompt] * num_images
-            images = self.pipe(prompts, height, width, num_inference, guidance_scale, negative_prompt,
-                               num_images).images
+            images = self.pipe(prompts, height, width, num_inference, guidance_scale, negative_prompt,num_images_per_prompt).images
             grid = image_grid(images, rows=1, cols=num_images)
         if save_path is not None:
             os.makedirs(os.path.dirname(save_path), exist_ok=True)
