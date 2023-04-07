@@ -13,7 +13,6 @@ class ImageToImageGenerator:
     def generate_image(self, init_img, strength, prompt, num_inference, guidance_scale, negative_prompt,
                        save_path):
         with torch.no_grad():
-            image = init_img.convert("RGB")
             image = self.pipe(init_img, strength, prompt, num_inference, guidance_scale, negative_prompt
                               ).images[0]
         if save_path is not None:
