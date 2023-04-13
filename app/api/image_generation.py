@@ -5,6 +5,8 @@ from app.models.stable_text_to_image import TextToImageGenerator
 from app.models.input_text_to_image import InputText
 from app.models.stable_image_to_image import ImageToImageGenerator
 from app.models.input_image_to_image import InputImage
+from fastapi.responses import StreamingResponse
+
 
 router = APIRouter()
 text_to_image_generator = TextToImageGenerator()
