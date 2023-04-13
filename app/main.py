@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.api.image import router as image_router
+from app.api.image_generation import router as image_router
 
 app = FastAPI()
 
