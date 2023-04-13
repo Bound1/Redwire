@@ -35,7 +35,7 @@ const App = () => {
                 num_inference: numInference,
                 guidance_scale: guidanceScale,
                 negative_prompt: negativePrompt,
-                height: 512,
+                height: 1024,
                 width: 512,
                 num_images: 1,
             }, {
@@ -55,12 +55,13 @@ const App = () => {
 
     return (
         <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-            <Box sx={{ width: 300, height: 300, border: '1px solid gray', marginBottom: 4, position: 'relative' }}>
-                {loading && <CircularProgress sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }} />}
+            <Box sx={{ width: 1024, height: 512, border: '1px solid gray', marginBottom: 4, position: 'relative' }}>
+                {loading && <CircularProgress size={100} sx={{  position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }} />}
+                {/* eslint-disable-next-line jsx-a11y/img-redundant-alt */}
                 {imageSrc && <img src={imageSrc} alt="AI-generated image" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
             </Box>
             <Grid container spacing={1} justifyContent="center" alignItems="center">
-                <Grid item container xs={6} justifyContent="center">
+                <Grid item container xs={6} justifyContent="center" sx={{ paddingLeft: '16px' }}> {/* Add paddingLeft to the Grid container */}
                     <PromptField value={prompt} onChange={handlePromptChange} label="Prompt" />
                 </Grid>
                 <Grid item xs={6}>
