@@ -1,10 +1,10 @@
 from PIL import Image
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import FileResponse
-from app.models.stable_text_to_image import TextToImageGenerator
-from app.models.input_text_to_image import InputText
-from app.models.stable_image_to_image import ImageToImageGenerator
-from app.models.input_image_to_image import InputImage
+from models.stable_text_to_image import TextToImageGenerator
+from models.input_text_to_image import InputText
+from models.stable_image_to_image import ImageToImageGenerator
+from models.input_image_to_image import InputImage
 
 router = APIRouter()
 text_to_image_generator = TextToImageGenerator()
