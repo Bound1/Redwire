@@ -79,7 +79,7 @@ async def image_to_image(input: InputImage):
         init_img = Image.open(init_img_path).convert("RGB")
         image_path = f"generated_images/{prompt}.png"
         image_to_image_generator.generate_image(prompt, init_img, strength, num_inference, guidance_scale,
-                                                negative_prompt, save_path=image_path)
+                                                negative_prompt, num_images, save_path=image_path)
         return FileResponse(image_path, media_type="image/png")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
