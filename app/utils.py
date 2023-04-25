@@ -1,13 +1,34 @@
 from PIL import Image
+from app.models.stable_text_to_image import TextToImageGenerator
 
 
-def image_grid(imgs, rows, cols):
-    assert len(imgs) == rows * cols
+def generate_text_to_image(prompt, height, width, num_inference, guidance_scale, negative_prompt,
+                           num_images_per_prompt):
+    text_to_image_generator = TextToImageGenerator()
+    if not prompt:
+        raise ValueError("Prompt cannot be empty")
+    try:
+        output_images = []
+        images = text_to_image_generator.generate_image(prompt, height, width, num_inference, guidance_scale,
+                                                            negative_prompt, num_images_per_prompt)
+        output_images.extend(images)
+        return output_images
+    except Exception as e:
+        raise ValueError(str(e))
 
-    w, h = imgs[0].size
-    grid = Image.new('RGB', size=(cols * w, rows * h))
-    grid_w, grid_h = grid.size
 
-    for i, img in enumerate(imgs):
-        grid.paste(img, box=(i % cols * w, i // cols * h))
-    return grid
+def generate_image_to_image(prompt, input_image, strength, num_inference_steps, guidance_scale, negative_prompt,
+                            num_images_per_prompt):
+    from app.models.stable_image_to_image import ImageToImageGenerator
+    image_to_image_generator = ImageToImageGenerator()
+    if not prompt:
+        raise ValueError("Prompt cannot be empty")
+    try:
+        output_images = []
+        input_image_pil = Image.fromarray(input_image, 'RGB')
+        images = image_to_image_generator.generate_image(prompt, input_image_pil, strength, num_inference_steps,
+                                                         guidance_scale, negative_prompt, num_images_per_prompt)
+        output_images.extend(images)
+        return output_images
+    except Exception as e:
+        raise ValueError(str(e))
