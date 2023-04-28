@@ -1,29 +1,11 @@
 import os
 import uuid
 import gradio as gr
-from utils import generate_text_to_image, generate_image_to_image, image_from_url_text
+from utils import generate_text_to_image, generate_image_to_image, save_image_gallery
 
 
-def save_image_gallery(gallery_value):
-    path = "output"  # Change this to the desired output directory
-    os.makedirs(path, exist_ok=True)
-
-    filenames = []
-    fullfns = []
-
-    for image_index, filedata in enumerate(gallery_value):
-        print(filedata)
-        image = image_from_url_text(filedata)
-
-        # Create a unique UUID-based filename
-        filename = f"image_{image_index}_{uuid.uuid4()}.png"
-        fullfn = os.path.join(path, filename)
-        image.save(fullfn)
-
-        filenames.append(filename)
-        fullfns.append(fullfn)
-
-    return gr.File.update(value=fullfns, visible=True)
+def save_image_gallery_wrapper(gallery_value):
+    return save_image_gallery(gallery_value)
 
 
 def text_to_image_wrapper(prompt, negative_prompt, num_inference, num_images_per_prompt, height, width, guidance_scale):
@@ -72,9 +54,10 @@ with gr.Blocks() as demo:
             with gr.Row():
                 with gr.Column():
                     text2image_output = gr.Gallery(label='Output').style(grid=4)
-                    text2image_save = gr.Button('Save Image', elem_id='save_text2image')
                     text2image_button = gr.Button("Generate Image from Text")
-                    text2image_download_files = gr.Files(None, file_count="multiple", interactive=False,file_types=["png"],
+                    text2image_save = gr.Button('Save Image', elem_id='save_text2image')
+                    text2image_download_files = gr.Files(None, file_count="multiple", interactive=False,
+                                                         file_types=["png"],
                                                          show_label=False,
                                                          visible=False, elem_id='download_files}')
     with gr.Tab("Generate images from an input image using an AI model"):
@@ -94,19 +77,26 @@ with gr.Blocks() as demo:
                 with gr.Column():
                     image2image_output = gr.Gallery(label='Output', show_label=False,
                                                     elem_id="image_to_image_gallery").style(grid=4)
-                    image_2_image_button = gr.Button("Generate Image from Image")
+                    image2image_button = gr.Button("Generate Image from Image")
+                    image2image_save = gr.Button('Save Image', elem_id='save_image2image')
+                    image2image_download_files = gr.Files(None, file_count="multiple", interactive=False,
+                                                          file_types=["png"],
+                                                          show_label=False,
+                                                          visible=False, elem_id='download_files}')
 
     text2image_button.click(text_to_image_wrapper, inputs=
     [text2image_prompt, text2image_negative_prompt, text2image_sampling_steps, text2image_images_per_prompt,
      text2image_height, text2image_width, text2image_guidance_scale],
                             outputs=text2image_output)
 
-    image_2_image_button.click(image_to_image_wrapper,
-                               inputs=[image2image_prompt, image2image_negative_prompt, image2image_images_per_prompt,
-                                       image2image_sampling_steps, image2image_image, image2image_strength,
-                                       image2image_guidance_scale],
-                               outputs=image2image_output)
+    image2image_button.click(image_to_image_wrapper,
+                             inputs=[image2image_prompt, image2image_negative_prompt, image2image_images_per_prompt,
+                                     image2image_sampling_steps, image2image_image, image2image_strength,
+                                     image2image_guidance_scale],
+                             outputs=image2image_output)
 
-    text2image_save.click(fn=save_image_gallery, inputs=[text2image_output], outputs=text2image_download_files)
+    text2image_save.click(fn=save_image_gallery_wrapper, inputs=[text2image_output], outputs=text2image_download_files)
+    image2image_save.click(fn=save_image_gallery_wrapper, inputs=[image2image_output],
+                           outputs=image2image_download_files)
 
 demo.launch()

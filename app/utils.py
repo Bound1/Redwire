@@ -1,5 +1,8 @@
 import base64
 import io
+import os
+import uuid
+import gradio as gr
 from PIL import Image
 from app.models.stable_text_to_image import TextToImageGenerator
 
@@ -36,8 +39,26 @@ def generate_image_to_image(prompt, input_image, strength, num_inference_steps, 
         raise ValueError(str(e))
 
 
-def plaintext_to_html(text: str) -> str:
-    return f"<p style='font-family: monospace;'>{text}</p>"
+def save_image_gallery(gallery_value):
+    path = "output"  # Change this to the desired output directory
+    os.makedirs(path, exist_ok=True)
+
+    filenames = []
+    fullfns = []
+
+    for image_index, filedata in enumerate(gallery_value):
+        print(filedata)
+        image = image_from_url_text(filedata)
+
+        # Create a unique UUID-based filename
+        filename = f"image_{image_index}_{uuid.uuid4()}.png"
+        fullfn = os.path.join(path, filename)
+        image.save(fullfn)
+
+        filenames.append(filename)
+        fullfns.append(fullfn)
+    return gr.File.update(value=fullfns, visible=True)
+
 
 def image_from_url_text(filedata):
     if filedata is None:
@@ -62,7 +83,3 @@ def image_from_url_text(filedata):
     filedata = base64.decodebytes(filedata.encode('utf-8'))
     image = Image.open(io.BytesIO(filedata))
     return image
-
-
-
-
