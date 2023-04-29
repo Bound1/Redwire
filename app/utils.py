@@ -1,3 +1,8 @@
+import base64
+import io
+import os
+import uuid
+import gradio as gr
 from PIL import Image
 from models.stable_text_to_image import TextToImageGenerator
 
@@ -10,7 +15,7 @@ def generate_text_to_image(prompt, height, width, num_inference, guidance_scale,
     try:
         output_images = []
         images = text_to_image_generator.generate_image(prompt, height, width, num_inference, guidance_scale,
-                                                            negative_prompt, num_images_per_prompt)
+                                                        negative_prompt, num_images_per_prompt)
         output_images.extend(images)
         return output_images
     except Exception as e:
@@ -32,3 +37,49 @@ def generate_image_to_image(prompt, input_image, strength, num_inference_steps, 
         return output_images
     except Exception as e:
         raise ValueError(str(e))
+
+
+def save_image_gallery(gallery_value):
+    path = "output"  # Change this to the desired output directory
+    os.makedirs(path, exist_ok=True)
+
+    filenames = []
+    fullfns = []
+
+    for image_index, filedata in enumerate(gallery_value):
+        print(filedata)
+        image = image_from_url_text(filedata)
+
+        # Create a unique UUID-based filename
+        filename = f"image_{image_index}_{uuid.uuid4()}.png"
+        fullfn = os.path.join(path, filename)
+        image.save(fullfn)
+
+        filenames.append(filename)
+        fullfns.append(fullfn)
+    return gr.File.update(value=fullfns, visible=True)
+
+
+def image_from_url_text(filedata):
+    if filedata is None:
+        return None
+
+    if type(filedata) == list and len(filedata) > 0 and type(filedata[0]) == dict and filedata[0].get("is_file", False):
+        filedata = filedata[0]
+
+    if type(filedata) == dict and filedata.get("is_file", False):
+        filename = filedata["name"]
+        return Image.open(filename)
+
+    if type(filedata) == list:
+        if len(filedata) == 0:
+            return None
+
+        filedata = filedata[0]
+
+    if filedata.startswith("data:image/png;base64,"):
+        filedata = filedata[len("data:image/png;base64,"):]
+
+    filedata = base64.decodebytes(filedata.encode('utf-8'))
+    image = Image.open(io.BytesIO(filedata))
+    return image
