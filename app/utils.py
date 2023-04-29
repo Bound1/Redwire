@@ -1,5 +1,5 @@
 from PIL import Image
-from app.models.stable_text_to_image import TextToImageGenerator
+from models.stable_text_to_image import TextToImageGenerator
 
 
 def generate_text_to_image(prompt, height, width, num_inference, guidance_scale, negative_prompt,

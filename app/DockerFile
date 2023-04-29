@@ -9,12 +9,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy source code
 COPY . .
-
+EXPOSE 8000
 # Set environment variables
 ENV PYTHONUNBUFFERED=TRUE
 ENV PYTHONDONTWRITEBYTECODE=TRUE
 ENV PATH="/app:${PATH}"
 
 # Set command to run when container starts
-CMD ["python", "gradio_app.py"]
+CMD ["python", "main.py"]
 

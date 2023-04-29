@@ -32,7 +32,7 @@ custom_css = """
 
 text_to_image_inputs = [
     gr.inputs.Textbox(lines=2, label="Prompt"),
-    gr.inputs.Slider(minimum=1, maximum=50, step=1, default=50, label="Num Inference Steps"),
+    gr.inputs.Slider(minimum=1, maximum=50, step=1, default=10, label="Num Inference Steps"),
     gr.inputs.Slider(minimum=1, maximum=10, step=1, default=1, label="Num Images Per Prompt"),
     gr.inputs.Slider(minimum=1, maximum=1024, step=8, default=512, label="Height"),
     gr.inputs.Slider(minimum=1, maximum=1024, step=8, default=512, label="Width"),
@@ -43,8 +43,8 @@ text_to_image_inputs = [
 # Image to Image Interface
 image_to_image_inputs = [
     gr.inputs.Textbox(lines=2, label="Prompt"),
-    gr.inputs.Slider(minimum=1, maximum=10, step=1, default=1, label="Num Images Per Prompt"),
-    gr.inputs.Slider(minimum=1, maximum=50, step=1, default=50, label="Num Inference Steps"),
+    gr.inputs.Slider(minimum=1, maximum=10, step=1, default=10, label="Num Images Per Prompt"),
+    gr.inputs.Slider(minimum=1, maximum=50, step=1, default=10, label="Num Inference Steps"),
     gr.inputs.Image(shape=(512, 512), label="Input Image"),
     gr.inputs.Slider(minimum=0, maximum=1.0, step=0.1, default=1.0, label="Strength"),
     gr.inputs.Slider(minimum=0, maximum=12, step=0.5, default=7.5, label="Guidance Scale"),
@@ -67,4 +67,4 @@ image_to_image_iface = gr.Interface(fn=image_to_image_wrapper,
 
 demo = gr.TabbedInterface([text_to_image_iface, image_to_image_iface], ["Text to Image", "Image to Image"])
 
-demo.launch()
+demo.launch(server_name="0.0.0.0", server_port=8000)
