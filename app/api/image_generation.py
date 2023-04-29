@@ -1,7 +1,6 @@
 import uuid
 from PIL import Image
 from fastapi import APIRouter, HTTPException
-from fastapi.responses import FileResponse
 from fastapi import File, UploadFile
 from app.models.stable_text_to_image import TextToImageGenerator
 from app.models.input_text_to_image import InputText
