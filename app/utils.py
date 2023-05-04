@@ -60,6 +60,12 @@ def save_image_gallery(gallery_value):
     return gr.File.update(value=fullfns, visible=True)
 
 
+def send_gradio_gallery_to_image(x):
+    if len(x) == 0:
+        return None
+    return image_from_url_text(x[0])
+
+
 def image_from_url_text(filedata):
     if filedata is None:
         return None
@@ -83,3 +89,10 @@ def image_from_url_text(filedata):
     filedata = base64.decodebytes(filedata.encode('utf-8'))
     image = Image.open(io.BytesIO(filedata))
     return image
+
+
+def send_selected_image_to_image2image(selected_image):
+    data_url = selected_image['data']
+    file_path = data_url.split('=')[1]
+    im = Image.open(file_path)
+    return gr.Image.update(value=im)

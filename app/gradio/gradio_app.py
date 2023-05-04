@@ -1,7 +1,9 @@
-import os
-import uuid
 import gradio as gr
-from utils import generate_text_to_image, generate_image_to_image, save_image_gallery
+
+from utils import generate_text_to_image, generate_image_to_image, save_image_gallery, \
+    send_selected_image_to_image2image
+
+selected_image_index = None
 
 
 def save_image_gallery_wrapper(gallery_value):
@@ -23,6 +25,18 @@ def image_to_image_wrapper(prompt, negative_prompt, num_images_per_prompt, num_i
     images = generate_image_to_image(prompt, image, strength, num_inference_steps, guidance_scale, negative_prompt,
                                      num_images_per_prompt)
     return images
+
+
+def send_selected_image_to_image2image_wrapper(gallery_output):
+    global selected_image_index
+    if selected_image_index is not None:
+        selected_image = gallery_output[selected_image_index]
+        return send_selected_image_to_image2image(selected_image)
+
+
+def set_selected_image_index(evt: gr.SelectData):
+    global selected_image_index
+    selected_image_index = evt.index
 
 
 custom_css = """
@@ -47,8 +61,9 @@ with gr.Blocks() as demo:
                 text2image_images_per_prompt = gr.inputs.Slider(minimum=1, maximum=10, step=1, default=1,
                                                                 label="Images Per "
                                                                       "Prompt")
-                text2image_height = gr.inputs.Slider(minimum=1, maximum=1024, step=8, default=512, label="Height")
-                text2image_width = gr.inputs.Slider(minimum=1, maximum=1024, step=8, default=512, label="Width")
+                text2image_height = gr.inputs.Slider(minimum=8, maximum=1024, step=8, default=512, label="Height")
+                text2image_width = gr.inputs.Slider(minimum=8, maximum=1024, step=8, default=512, label="Width")
+
                 text2image_guidance_scale = gr.inputs.Slider(minimum=0, maximum=12, step=0.5, default=7.5,
                                                              label="Guidance Scale")
             with gr.Row():
@@ -56,6 +71,7 @@ with gr.Blocks() as demo:
                     text2image_output = gr.Gallery(label='Output').style(grid=4)
                     text2image_button = gr.Button("Generate Image from Text")
                     text2image_save = gr.Button('Save Image', elem_id='save_text2image')
+                    text2image_send_to_image2image = gr.Button('Send to Image2Image')
                     text2image_download_files = gr.Files(None, file_count="multiple", interactive=False,
                                                          file_types=["png"],
                                                          show_label=False,
@@ -84,9 +100,15 @@ with gr.Blocks() as demo:
                                                           show_label=False,
                                                           visible=False, elem_id='download_files}')
 
-    text2image_button.click(text_to_image_wrapper, inputs=
-    [text2image_prompt, text2image_negative_prompt, text2image_sampling_steps, text2image_images_per_prompt,
-     text2image_height, text2image_width, text2image_guidance_scale],
+    text2image_output.select(set_selected_image_index)
+
+    text2image_send_to_image2image.click(send_selected_image_to_image2image_wrapper, inputs=[text2image_output],
+                                         outputs=image2image_image)
+
+    text2image_button.click(text_to_image_wrapper, inputs=[text2image_prompt, text2image_negative_prompt,
+                                                           text2image_sampling_steps, text2image_images_per_prompt,
+                                                           text2image_height,
+                                                           text2image_width, text2image_guidance_scale],
                             outputs=text2image_output)
 
     image2image_button.click(image_to_image_wrapper,
