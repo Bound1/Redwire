@@ -5,6 +5,8 @@ import uuid
 import gradio as gr
 from PIL import Image
 from app.models.stable_text_to_image import TextToImageGenerator
+from app.models.stable_image_to_image import ImageToImageGenerator
+from app.models.stable_image_variation import ImageVariationGenerator
 
 
 def generate_text_to_image(prompt, height, width, num_inference, guidance_scale, negative_prompt,
@@ -24,7 +26,6 @@ def generate_text_to_image(prompt, height, width, num_inference, guidance_scale,
 
 def generate_image_to_image(prompt, input_image, strength, num_inference_steps, guidance_scale, negative_prompt,
                             num_images_per_prompt):
-    from app.models.stable_image_to_image import ImageToImageGenerator
     image_to_image_generator = ImageToImageGenerator()
     if not prompt:
         raise ValueError("Prompt cannot be empty")
@@ -33,6 +34,20 @@ def generate_image_to_image(prompt, input_image, strength, num_inference_steps, 
         input_image_pil = Image.fromarray(input_image, 'RGB')
         images = image_to_image_generator.generate_image(prompt, input_image_pil, strength, num_inference_steps,
                                                          guidance_scale, negative_prompt, num_images_per_prompt)
+        output_images.extend(images)
+        return output_images
+    except Exception as e:
+        raise ValueError(str(e))
+
+
+def generate_image_variation(input_image, num_inference_steps, guidance_scale,
+                             num_images_per_prompt):
+    image_variation_generator = ImageVariationGenerator()
+    try:
+        output_images = []
+        input_image_pil = Image.fromarray(input_image, 'RGB')
+        images = image_variation_generator.generate_image(input_image_pil, input_image_pil.height, input_image_pil.width, num_inference_steps,
+                                                          guidance_scale, num_images_per_prompt)
         output_images.extend(images)
         return output_images
     except Exception as e:
