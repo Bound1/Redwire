@@ -165,4 +165,5 @@ with gr.Blocks() as demo:
     image_variation_save.click(fn=save_image_gallery_wrapper, inputs=[image_variation_output],
                                outputs=image_variation_download_files)
 
-demo.launch()
+demo.launch(server_name="0.0.0.0", server_port=8000)
+

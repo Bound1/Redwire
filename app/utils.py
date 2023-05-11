@@ -4,9 +4,9 @@ import os
 import uuid
 import gradio as gr
 from PIL import Image
-from app.models.stable_text_to_image import TextToImageGenerator
-from app.models.stable_image_to_image import ImageToImageGenerator
-from app.models.stable_image_variation import ImageVariationGenerator
+from models.stable_text_to_image import TextToImageGenerator
+from models.stable_image_to_image import ImageToImageGenerator
+from models.stable_image_variation import ImageVariationGenerator
 
 
 def generate_text_to_image(prompt, height, width, num_inference, guidance_scale, negative_prompt,
