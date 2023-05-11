@@ -5,7 +5,7 @@ from diffusers import StableDiffusionPipeline
 
 
 class TextToImageGenerator:
-    def __init__(self, model_id="runwayml/stable-diffusion-v1-5", device="cuda"):
+    def __init__(self, model_id="runwayml/stable-diffusion-v1-5", device="cpu"):
         self.device = torch.device(device)
         self.pipe = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float32)
         self.pipe = self.pipe.to(self.device)
